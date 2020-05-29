@@ -1,5 +1,10 @@
 @import "variables";
 
+@keyframes bs-notify-fadeOut {
+  0% {opacity: 0.9;}
+  100% {opacity: 0;}
+}
+
 // Mixins
 @mixin cursor-disabled() {
   cursor: not-allowed;
@@ -7,13 +12,13 @@
 
 @mixin box-sizing($fmt) {
   -webkit-box-sizing: $fmt;
-  -moz-box-sizing: $fmt;
-  box-sizing: $fmt;
+     -moz-box-sizing: $fmt;
+          box-sizing: $fmt;
 }
 
 @mixin box-shadow($fmt) {
   -webkit-box-shadow: $fmt;
-  box-shadow: $fmt;
+          box-shadow: $fmt;
 }
 
 @function fade($color, $amnt) {
@@ -41,13 +46,13 @@ select.selectpicker {
     // necessary for proper positioning of caret in Bootstrap 4 (pushes caret to the right)
     text-align: right;
     white-space: nowrap;
-    // vertically center the caret for Bootstrap 4
+    // force caret to be vertically centered for Bootstrap 4 multi-line buttons
     display: inline-flex;
     align-items: center;
+    justify-content: space-between;
 
     &:after {
       margin-top: -1px;
-      margin-left: auto;
     }
 
     &.bs-placeholder {
@@ -91,7 +96,7 @@ select.selectpicker {
       left: 0;
       display: block !important;
       width: 100% !important;
-      z-index: 2;
+      z-index: 2 !important;
     }
   }
 
@@ -99,12 +104,12 @@ select.selectpicker {
   .has-error & .dropdown-toggle,
   .error & .dropdown-toggle,
   &.is-invalid .dropdown-toggle,
-  .was-validated & .selectpicker:invalid + .dropdown-toggle {
+  .was-validated & select:invalid + .dropdown-toggle {
     border-color: $color-red-error;
   }
 
   &.is-valid .dropdown-toggle,
-  .was-validated & .selectpicker:valid + .dropdown-toggle {
+  .was-validated & select:valid + .dropdown-toggle {
     border-color: $color-green-success;
   }
 
@@ -130,14 +135,14 @@ select.selectpicker {
     margin-bottom: 0;
     padding: 0;
     border: none;
+    height: auto;
 
     :not(.input-group) > &:not([class*="col-"]) {
       width: 100%;
     }
 
-    .input-group &,
     &.input-group-btn {
-      display: table-cell;
+      float: none;
       z-index: auto;
     }
   }
@@ -225,24 +230,22 @@ select.selectpicker {
 
   // The selectpicker button
   .dropdown-toggle {
-    // necessary to maintain proper button height with Bootstrap 3
-    &:before {
-      content: '';
-      display: inline-block;
-    }
-
     .filter-option {
       position: static;
       top: 0;
       left: 0;
       float: left;
-      padding-right: inherit;
       height: 100%;
       width: 100%;
       text-align: left;
-      margin-right: -100%;
+      overflow: hidden;
+      flex: 0 1 auto; // for IE10
 
-      @at-root .input-group .bs3#{&} {
+      @at-root .bs3#{&} {
+        padding-right: inherit;
+      }
+
+      @at-root .input-group .bs3-has-addon#{&} {
         position: absolute;
         padding-top: inherit;
         padding-bottom: inherit;
@@ -261,7 +264,7 @@ select.selectpicker {
 
     // used to expand the height of the button when inside an input group
     .filter-expand {
-      width: 0.5px !important;
+      width: 0 !important;
       float: left;
       opacity: 0 !important;
       overflow: hidden;
@@ -350,6 +353,10 @@ select.selectpicker {
       pointer-events: none;
       opacity: 0.9;
       @include box-sizing(border-box);
+
+      &.fadeOut {
+        animation: 300ms linear 750ms forwards bs-notify-fadeOut;
+      }
     }
   }
 
@@ -370,6 +377,10 @@ select.selectpicker {
     .filter-option-inner,
     .filter-option-inner-inner {
       display: inline;
+    }
+
+    .bs-caret:before {
+      content: '\00a0';
     }
 
     .caret {
@@ -400,6 +411,7 @@ select.selectpicker {
     height: 1em;
     border-style: solid;
     border-width: 0 0.26em 0.26em 0;
+    transform-style: preserve-3d;
     transform: rotate(45deg);
   }
 }
