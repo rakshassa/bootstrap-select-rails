@@ -3199,7 +3199,3 @@
       })
     });
   })(jQuery);
-  
-  
-  }));
-  //# sourceMappingURL=bootstrap-select.js.map
